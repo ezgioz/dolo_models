@@ -4,15 +4,13 @@ using AxisArrays
 
 path = pwd()
 #fn = ("https://raw.githubusercontent.com/ezgioz/dolo_models/ezgioz/sudden-stop-models/sudden_stop/sudden_stop_cd.yaml");
-fn = joinpath(path,"sudden_stop","sudden_stop_cd_hh.yaml")
+fn = joinpath(path,"sudden_stop","sudden_stop_cd_hh2.yaml")
 
 
 model = Dolo.yaml_import(fn);
 
-#The process hasa transition probability matrix
-print(model.exogenous.transitions)
-# and values for two states: bad state & good state
-print(model.exogenous.values)
+Dolo.residuals(model)
+
 
 N= 1 # number  of simulations
 T=100 # periods of simulation
@@ -21,7 +19,8 @@ hor= linspace(1, T, T)
 import PyPlot
 plt = PyPlot;
 
-
+Dolo.find_deterministic_equilibrium(model)
+Dolo.perturbate(model)
 
 fig = plt.figure("Sudden Stop Markov Chain")
 
@@ -33,10 +32,11 @@ plt.legend()
 plt.xlabel("Horizon");
 plt.title("Sudden Stop Markov Chain");
 
-Dolo.set_calibration!(model, :minlw, -0.35)
-Dolo.set_calibration!(model, :minle, -0.35)
-
+Dolo.set_calibration!(model, :minl, -0.3)
+Dolo.set_calibration!(model, :minl, -0.6)
+model.domain
 sol = Dolo.time_iteration(model, verbose=true)
+
 Dolo.set_calibration!(model, :minlw, -1.1)
 sol = Dolo.time_iteration(model, sol.dr, verbose=true)
 Dolo.set_calibration!(model, :minl, -1.15)
@@ -79,3 +79,4 @@ plt.xlabel("Bond holdings");
 plt.legend()
 plt.ylabel("The desicion rule (Next period holdings)");
 plt.title("Decision rule for Sudden Stop - Exchange rate model");
+#
