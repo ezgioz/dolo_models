@@ -2,55 +2,62 @@
 # "From Sudden Stops to Fisherian Deflation, Quantitative Theory and Policy"
 # by Anton Korinek and Enrique G. Mendoza
 
-name: Sudden Stop (General)
+name: Sudden Stop (Two agents)
 
 model_type: dtcc
 symbols:
 
     exogenous: [y]
     states: [lw, le]
-    controls: [be, bw, cTw, cNw]
-    #values: [V, Vc]
-    parameters: [beta, R, sigma, a, mu, kappa, delta_y, pi, minlw, maxlw, minle, maxle]
-    #rewards: [u]
+    controls: [bw, lamw, be, lame]
+    #values: [Ve, Vce]
+    parameters: [betae, betaw, R, sigma, a, mu, kappa, delta_y, pi, minlw, maxlw, minle, maxle]
+    #rewards: [ue]
 
 definitions:
     yT: y/2
     yN: y/2
-    yTw: yT/2
-    yNw: yN/2
     yTe: yT/2
+    yTw: yT/2
     yNe: yN/2
-
-    cN: yN
-    cNe: cN - cNw
-    p: ( (1-a)/a )* (cTw/cNw)^(1+mu)
-    cTe: yTe + (( (1-a)/a )* (cTw/cNw)^(1+mu))*(yNe-cNe) + le - be/R
-
-
+    yNw: yN/2
+    yyTe: yTe + le - be/R
+    yyTw: yTw + lw - bw/R
+    p:  ( (1-a)/a )* ((yyTe+yyTw)/yN)^(1+mu)
+    she: (p*yNw + yyTw)/(p*yN + yyTe+yyTw)
+    cNw: she*yN
+    cTw: she*(yyTe+yyTw)
+    cNe: (1-she)*yN
+    cTe: (1-she)*(yyTe+yyTw)
     cw: ( a*(cTw)^(-mu) + (1-a)*(cNw)^(-mu) )^(-1/mu)
     ce: ( a*(cTe)^(-mu) + (1-a)*(cNe)^(-mu) )^(-1/mu)
-
-
+    b: bw + be
+    cT: cTw + cTe
+    c: cw + ce
 
 equations:
 
     transition:
-        - le = be(-1)
         - lw = bw(-1)
+        - le = be(-1)
 
     arbitrage:
-        - cNw = yN*cTw/(cTe+cTw)
-        - cTw = yTw + p*(yNw-cNw) + lw - bw/R
-        #- lamw = bw/R +  kappa*(p*yNw +yTw)
-        #- lame = be/R +  kappa*(p*yNe +yTe)
-        - 1 - beta*R*( (cTw(1)/cTw)^(-mu-1) ) *((cw(1)/cw)^(1-sigma+mu)) #|  0 <= lamw <= inf
-        - 1 - beta*R*( (cTe(1)/cTe)^(-mu-1) ) *((ce(1)/ce)^(1-sigma+mu)) #|  0 <= lame <= inf
+        - lamw = bw/R +  kappa*(p*yNw +yTw)
+        - 1 - betaw*R*( (cTw(1)/cTw)^(-mu-1) ) *((cw(1)/cw)^(1-sigma+mu)) |  0 <= lamw <= inf
+        - lame = be/R +  kappa*(p*yNe +yTe)
+        - 1 - betae*R*( (cTe(1)/cTe)^(-mu-1) ) *((ce(1)/ce)^(1-sigma+mu)) |  0 <= lame <= inf
+    #value:
+    #    - Ve = ce^(1.0-sigma)/(1.0-sigma) + beta*V(1)
+    #    - Vce = ce^(1.0-sigma)/(1.0-sigma)
 
+
+    #felicity:
+    #    - ue =  ce^(1-sigma)/(1-sigma)
 
 
 calibration:
-    beta: 0.96
+    betae: 0.96
+    betaw: 0.96
     R: 1.03
     sigma: 2.0
     a: 1/3
@@ -61,46 +68,45 @@ calibration:
 
 # Deterministic steady state: initial values
     y: 2.0
-    yT: 1.0
-    yN: 1.0
-
-    yTw: yT/2
-    yNw: yN/2
+    yT: y/2
+    yN: y/2
     yTe: yT/2
+    yTw: yT/2
     yNe: yN/2
-    cNw: yN - cNe
-    cTw: yTw + p*(yNw-cNw) + lw - bw/R
-    cTe: yTe + p*(yNe-cNe) + le - be/R
-    cw: ( a*(cTw)^(-mu) + (1-a)*(yNw)^(-mu) )^(-1/mu)
-    ce: ( a*(cTe)^(-mu) + (1-a)*(yNe)^(-mu) )^(-1/mu)
-
-
-    cNe: yNe
-    cNw: yNw
+    yNw: yN/2
+    yyTe: yTe + le - be/R
+    yyTw: yTw + lw - bw/R
+    p:  ( (1-a)/a )* ((yyTe+yyTw)/yN)^(1+mu)
+    she: (p*yNw + yyTw)/(p*yN + yyTe+yyTw)
+    cNw: she*yN
+    cTw: she*(yyTe+yyTw)
+    cNe: (1-she)*yN
+    cTe: (1-she)*(yyTe+yyTw)
+    cw: ( a*(cTw)^(-mu) + (1-a)*(cNw)^(-mu) )^(-1/mu)
+    ce: ( a*(cTe)^(-mu) + (1-a)*(cNe)^(-mu) )^(-1/mu)
+    #Ve: ce^(1.0-sigma)/(1.0-sigma)/(1.0-beta)
+    #Vce: ce^(1.0-sigma)/(1.0-sigma)
+    #ue:  ce^(1-sigma)/(1-sigma)
+    minle: min(-(1+kappa)*yT)
+    maxle: 0.3
+    minlw: min(-(1+kappa)*yT)
+    maxlw: 0.3
     be: 0
     bw: 0
     le: 0
     lw: 0
-    p: 2
-    #lame: 2/3
+
+    lame: 2/3
     lamw: 2/3
-
-
-
-
-    minlw: min(-(1+kappa)*yTw)
-    minle: min(-(1+kappa)*yTe)
-    maxlw: 0.3
-    maxle: 0.3
 
 exogenous: !MarkovChain
     values: [[ 2-2*delta_y  ],  # bad state
              [ 2.0 ]]          # good state
     transitions: [[ pi, 1-pi ],   # probabilities   [p(L|L), p(H|L)]
-                  [ pi, 1-pi ]]     # probabilities   [p(L|H), p(zH|H)]
+                  [ pi, 1-pi ]]     # probabilities   [p(L|H), p(H|H)]
 domain:
-    lw: [minlw, maxlw]
     le: [minle, maxle]
+    lw: [minle, maxle]
     #l: [-1, 1]
 options:
     grid: !Cartesian
