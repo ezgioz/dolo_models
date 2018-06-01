@@ -23,6 +23,9 @@ definitions:
     p:  ( (1-a)/a )* (cT/yN)^(1+mu)
 
 equations:
+    controls_lb:
+        - cT = 0
+        - p = 0
 
     transition:
         - l = b(-1)
@@ -54,13 +57,13 @@ calibration:
     y: 2.0
     yT: 1.0
     yN: 1.0
-    b: 0.0
-    l: 0.0
-    cT: 1
-    cN: 1
-    c: 1
-    p: 2
-    lam: 2/3
+    b: -R/(1+R)
+    l: -R/(1+R)
+    cT: 2/(1+R)
+    cN: yN
+    c: ( a*(cT)^(-mu) + (1-a)*(yN)^(-mu) )^(-1/mu)
+    p:  ( (1-a)/a )* (cT/yN)^(1+mu)
+    lam: b/R +  kappa*(p*yN +yT)
     V: c^(1.0-sigma)/(1.0-sigma)/(1.0-beta)
     Vc: c^(1.0-sigma)/(1.0-sigma)
     u:  c^(1-sigma)/(1-sigma)
