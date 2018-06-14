@@ -78,26 +78,26 @@ calibration:
     yyTw: yTw + lw - bw/R
     p:  ( (1-a)/a )* ((yyTe+yyTw)/yN)^(1+mu)
     she: (p*yNw + yyTw)/(p*yN + yyTe+yyTw)
-    cNw: she*yN
-    cTw: she*(yyTe+yyTw)
-    cNe: (1-she)*yN
-    cTe: (1-she)*(yyTe+yyTw)
+    cNw: yN/2
+    cTw: (1+R)
+    cNe: yN/2
+    cTe: (1+R)
     cw: ( a*(cTw)^(-mu) + (1-a)*(cNw)^(-mu) )^(-1/mu)
     ce: ( a*(cTe)^(-mu) + (1-a)*(cNe)^(-mu) )^(-1/mu)
     #Ve: ce^(1.0-sigma)/(1.0-sigma)/(1.0-beta)
     #Vce: ce^(1.0-sigma)/(1.0-sigma)
     #ue:  ce^(1-sigma)/(1-sigma)
-    minle: min(-(1+kappa)*yT)
-    maxle: 0.3
-    minlw: min(-(1+kappa)*yT)
-    maxlw: 0.3
-    be: 0
-    bw: 0
-    le: 0
-    lw: 0
+    minle: min(-(1+kappa)*yT)/2
+    maxle: 0.15
+    minlw: min(-(1+kappa)*yT)/2
+    maxlw: 0.15
+    be: -R/2*(1+R)
+    bw: -R/2*(1+R)
+    le: -R/2*(1+R)
+    lw: -R/2*(1+R)
 
-    lame: 2/3
-    lamw: 2/3
+    lame: be/R +  kappa*(p*yNe +yTe)
+    lamw: bw/R +  kappa*(p*yNw +yTw)
 
 exogenous: !MarkovChain
     values: [[ 2-2*delta_y  ],  # bad state

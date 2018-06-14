@@ -23,16 +23,16 @@ definitions:
     p:  ( (1-a)/a )* (cT/yN)^(1+mu)
 
 equations:
-    controls_lb:
-        - cT = 0
-        - p = 0
+    #controls_lb:
+        #- cT = 0
+        #- p = 0
 
     transition:
         - l = b(-1)
 
     arbitrage:
         - lam = b/R +  kappa*(p*yN +yT)
-        - 1 - beta*R*( (cT(1)/cT)^(-mu-1) ) *((c(1)/c)^(1-sigma+mu)) |  0 <= lam <= inf
+        - 1 - beta*R*( (cT(1)/cT)^(-mu-1) ) *((c(1)/c)^(1-sigma+mu)) | 0 <= lam <= inf
 
     value:
         - V = c^(1.0-sigma)/(1.0-sigma) + beta*V(1)
@@ -67,7 +67,7 @@ calibration:
     V: c^(1.0-sigma)/(1.0-sigma)/(1.0-beta)
     Vc: c^(1.0-sigma)/(1.0-sigma)
     u:  c^(1-sigma)/(1-sigma)
-    minl: min(-(1+kappa)*yT)
+    minl: -1.2
     maxl: 0.3
 
 exogenous: !MarkovChain
