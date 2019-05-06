@@ -1,12 +1,11 @@
 from dolo import *
 import os
 
-model = yaml_import('/sudden_stop_ar1.yaml')
-
 dirs = ["RBCS", "LAMP"]
 error_list = []
 
 for folder in dirs:
+
     dir = os.listdir(folder)
     for file in dir:
         if file.endswith("yaml"):
@@ -19,21 +18,21 @@ for folder in dirs:
             err_message_time_iteration = "Can not solve " + file + " by time iteration"
             try:
                 model = yaml_import(fname)
-                print(message_import)
+                #print(message_import)
             except:
-                print(err_message_import)
+                #print(err_message_import)
                 error_list.append(err_message_import)
             try:
                 dr_pert = perturb(model)
-                print(message_perturb)
+                #print(message_perturb)
             except:
-                print(err_message_perturb)
+                #print(err_message_perturb)
                 error_list.append(err_message_perturb)
             try:
                 dr_global = time_iteration(model, verbose=False)
-                print(message_time_iteration)
+                #print(message_time_iteration)
             except:
-                print(err_message_time_iteration)
+                #print(err_message_time_iteration)
                 error_list.append(err_message_time_iteration)
 
 # Or print only errors
