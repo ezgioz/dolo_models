@@ -1,8 +1,9 @@
 symbols:
-    exogenous: [ψ,Ξ,Ψ,θ]
+    #exogenous: [ψ,Ξ,Ψ,θ]
+    exogenous: [ψ]
     states: [p,P,m]
     controls: [c,W]
-    parameters: [β, ρ, α, δ, l, μ, τ, D, σ_θ, σ_ψ, σ_Ξ, σ_Ψ, r, Γ,Z]
+    parameters: [β, ρ, α, δ, l, μ, τ, D, σ_ψ, σ_Ξ, σ_Ψ, σ_θ, r, Γ,Z,Ξ,Ψ,θ]
 
 definitions:
     L: P*Ξ
@@ -57,16 +58,36 @@ calibration:
     σ_Ξ: 0.00001
     σ_Ψ: 0.00004
     u: 0.07
+    
+    Ξ: 1 
+    Ψ: 1
+    θ: 1
  
     # KS income shocks
     
 
 domain:
+    p: [0.1, 4.0]
+    P: [0.1, 4.0]
     m: [0.1, 4.0]
 
-exogenous: !AR1
-    rho: 0.9
-    Sigma: [[σ^2]]
+
+exogenous: !LogNormal
+    Sigma: [[σ_ψ^2]]
+
+#exogenous: !Product
+#    p1: !Normal
+#    Sigma: [[σ_ψ^2]]
+#    
+#    p2: !Normal
+#    Sigma: [[σ_Ξ^2]]
+#    
+#    p3: !Normal
+#    Sigma: [[σ_Ψ^2]]
+#    
+#    p4: !Normal
+#    Sigma: [[σ_θ^2]]
+
 
 
 options:
