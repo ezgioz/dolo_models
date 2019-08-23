@@ -1,90 +1,102 @@
 symbols:
     #exogenous: [ψ,Ξ,Ψ,θ]
     exogenous: [ψ]
-    states: [p,P,m]
-    controls: [c,W]
-    parameters: [β, ρ, α, δ, l, μ, τ, D, σ_ψ, σ_Ξ, σ_Ψ, σ_θ, r, Γ,Z,Ξ,Ψ,θ]
+    #states: [p,P,m]
+    states: [m]
+    #controls: [c,W]
+    controls: [c]
+    #parameters: [β, ρ, α, δ, l, μ, τ, D, σ_ψ, σ_Ξ, σ_Ψ, σ_θ, r, Γ,Z,Ξ,Ψ,θ]
+    parameters: [β, ρ, δ, l, τ, D, σ_ψ, r, Γ,θ]
 
-definitions:
-    L: P*Ξ
+#definitions:
+    #L: P*Ξ
     #W: (1-α)*Z*(K/(l*L))^α
     #K: (l*L)*(W/((1-α)*Z))^(1/α)
     #y: p*ξ*W
     #Y: Z*(K^α)*(l*L))^(1-α)
     #ξ: (1-τ)*l*θ
-  
+
 equations:
 
     transition:
-        - p = p(-1)*ψ
-        - P = P(-1)*Ψ 
+        #- p = p(-1)*ψ
+        #- P = P(-1)*Ψ
         - m = (1-τ)*l*θ + (m(-1)-c(-1))*((r+Γ)/(D*ψ))
 
     arbitrage:
         - ( β*(r+Γ)/(D*ψ)) * (c(1)/c)^(-ρ) -1 | 0.0<=c<=m
 
 calibration:
-    
 
-    
+
+
     # Representative agent model
     β: 0.96
     ρ: 2.5
     α: 0.36
     δ: 0.025
     l: 1/0.9
-    
+
     Z: 1
     τ: 0
     Γ: 1-δ
     r: 0.01+δ
-    
+
     # Steady-state
-    
+
     m: 1
     c: 1
     W: 1
     p: 1
     P: 1
     ξ: 1
-    
-    # Heterogenous agents models 
+
+    # Heterogenous agents models
     μ: 0.15
-    D: 0.00625
-    
+    #D: 0.00625
+    D: 1
+
     # FBS income shocks
     σ_θ: 0.010*4
     σ_ψ: 0.010*4/11
     σ_Ξ: 0.00001
     σ_Ψ: 0.00004
     u: 0.07
-    
-    Ξ: 1 
+
+    Ξ: 1
     Ψ: 1
     θ: 1
- 
+
     # KS income shocks
-    
+
 
 domain:
-    p: [0.1, 4.0]
-    P: [0.1, 4.0]
+    #p: [0.1, 4.0]
+    #P: [0.1, 4.0]
     m: [0.1, 4.0]
 
 
 exogenous: !LogNormal
-    Sigma: [[σ_ψ^2]]
+    #a: 0
+    #b: 1
+    mu: 0
+    sigma: σ_ψ^2
+    #α: 0
+    #β: 1
+    #Sigma: [[σ_ψ^2]]
+    #mu: 0
+    #sigma: sig^2
 
 #exogenous: !Product
 #    p1: !Normal
 #    Sigma: [[σ_ψ^2]]
-#    
+#
 #    p2: !Normal
 #    Sigma: [[σ_Ξ^2]]
-#    
+#
 #    p3: !Normal
 #    Sigma: [[σ_Ψ^2]]
-#    
+#
 #    p4: !Normal
 #    Sigma: [[σ_θ^2]]
 
